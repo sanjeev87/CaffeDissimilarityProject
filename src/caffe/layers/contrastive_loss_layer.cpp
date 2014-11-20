@@ -29,6 +29,7 @@ void ContrastiveLossLayer<Dtype>::LayerSetUp(
     summer_vec_.mutable_cpu_data()[i] = Dtype(1);
 }
 
+/*
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Forward_cpu(
     const vector<Blob<Dtype>*>& bottom,
@@ -52,6 +53,51 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
     }
   }
   loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
+  (*top)[0]->mutable_cpu_data()[0] = loss;
+}
+*/
+
+template <typename Dtype>
+inline Dtype exponent(Dtype x) {
+  return exp(x);
+}
+
+template <typename Dtype>
+void ContrastiveLossLayer<Dtype>::Forward_cpu(
+    const vector<Blob<Dtype>*>& bottom,
+    vector<Blob<Dtype>*>* top) {
+  int count = bottom[0]->count();
+  caffe_sub(
+      count,
+      bottom[0]->cpu_data(),  // a
+      bottom[1]->cpu_data(),  // b
+      diff_.mutable_cpu_data());  // a_i-b_i
+  const int channels = bottom[0]->channels();
+  /*
+   * margin refers to the maximum value of energy -- parameter Q in the paper
+   */
+
+  Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+  Dtype loss(0.0);
+  for (int i = 0; i < bottom[0]->num(); ++i) {
+    dist_sq_.mutable_cpu_data()[i] = caffe_cpu_asum(channels,
+        diff_.cpu_data() + (i*channels));
+    /* 
+     * 1 is similar pair, 0 is impostor pair.
+     * The paper follows opposite notation
+     */
+
+    if (static_cast<int>(bottom[2]->cpu_data()[i])) {  // similar pairs
+      
+      loss += Dtype(2) / margin * dist_sq_.cpu_data()[i] * dist_sq_.cpu_data()[i];
+    
+    } else {  // dissimilar pairs
+      //loss += std::max(margin-dist_sq_.cpu_data()[i], Dtype(0.0));
+      loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
+    
+    }
+  }
+  //loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
 
