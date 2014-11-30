@@ -110,6 +110,7 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[i]->num());
+          printf("value of alpha is %f \n", (float)alpha);
       int num = (*bottom)[i]->num();
       int channels = (*bottom)[i]->channels();
       for (int j = 0; j < num; ++j) {
