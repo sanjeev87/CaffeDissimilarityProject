@@ -104,9 +104,9 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   const int num = this->blob_bottom_data_i_->num();
   const int channels = this->blob_bottom_data_i_->channels();
   Dtype loss(0);
-  Dtype l1_norm(0);
   for (int i = 0; i < num; ++i) {
     Dtype dist_sq(0);
+    Dtype l1_norm(0);
     for (int j = 0; j < channels; ++j) {
       Dtype diff = this->blob_bottom_data_i_->cpu_data()[i*channels+j] -
           this->blob_bottom_data_j_->cpu_data()[i*channels+j];
