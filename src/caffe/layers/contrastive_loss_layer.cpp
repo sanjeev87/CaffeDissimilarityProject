@@ -82,6 +82,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
   for (int i = 0; i < bottom[0]->num(); ++i) {
     dist_sq_.mutable_cpu_data()[i] = caffe_cpu_asum(channels,
         diff_.cpu_data() + (i*channels));
+
     /* 
      * 1 is similar pair, 0 is impostor pair.
      * The paper follows opposite notation
@@ -100,7 +101,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
   //loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
-
+/*
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
@@ -110,9 +111,6 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[i]->num());
-          printf("value of alpha is %f \n", (float)alpha);
-          printf("value of CPU diff is %f \n", (float) top[0]->cpu_diff()[0]);
-          printf("value of bottom num is %d \n", (int) (*bottom)[i]->num());
       int num = (*bottom)[i]->num();
       int channels = (*bottom)[i]->channels();
       for (int j = 0; j < num; ++j) {
@@ -135,6 +133,63 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
           } else {
             caffe_set(channels, Dtype(0), bout + (j*channels));
           }
+        }
+      }
+    }
+  }
+}
+*/
+template <typename Dtype>
+void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
+    const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
+  Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+  for (int i = 0; i < 2; ++i) {
+    if (propagate_down[i]) {
+      const Dtype sign = (i == 0) ? 1 : -1;
+      const Dtype alpha = sign * top[0]->cpu_diff()[0] /
+          static_cast<Dtype>((*bottom)[i]->num());
+          printf("value of alpha is %f \n", (float)alpha);
+          printf("value of CPU diff is %f \n", (float) top[0]->cpu_diff()[0]);
+          printf("value of bottom num is %d \n", (int) (*bottom)[i]->num());
+      int num = (*bottom)[i]->num();
+      int channels = (*bottom)[i]->channels();
+      for (int j = 0; j < num; ++j) {
+        Dtype* bout = (*bottom)[i]->mutable_cpu_diff();
+        if (static_cast<int>((*bottom)[2]->cpu_data()[j])) {  // similar pairs
+          for(int k = 0 ; k < channels ; k ++){
+            Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
+            bout[(j*channels) + k] += sign * dist_sq_.mutable_cpu_data()[j] 
+                                    * gradient_sign * 4 / margin;
+          }
+          /*
+          caffe_cpu_axpby(
+              channels,
+              alpha,
+              diff_.cpu_data() + (j*channels),
+              Dtype(0.0),
+              bout + (j*channels));
+          */
+        } else {  // dissimilar pairs
+          
+          for(int k = 0 ; k < channels ; k ++){
+            Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
+            bout[(j*channels) + k] += -Dtype(1.0) * 2 * -Dtype(2.77) 
+                                    * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i])
+                                    * gradient_sign * sign;
+          }
+
+          /*
+          if ((margin-dist_sq_.cpu_data()[j]) > Dtype(0.0)) {
+            caffe_cpu_axpby(
+                channels,
+                -alpha,
+                diff_.cpu_data() + (j*channels),
+                Dtype(0.0),
+                bout + (j*channels));
+          } else {
+            caffe_set(channels, Dtype(0), bout + (j*channels));
+          }
+          */
         }
       }
     }
