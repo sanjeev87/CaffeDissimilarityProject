@@ -16,6 +16,11 @@
 
 namespace caffe {
 
+template <typename Dtype>
+inline Dtype exponent(Dtype x) {
+  return exp(x);
+}
+
 template <typename TypeParam>
 class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
   typedef typename TypeParam::Dtype Dtype;
@@ -58,6 +63,7 @@ class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
 
 TYPED_TEST_CASE(ContrastiveLossLayerTest, TestDtypesAndDevices);
 
+/*
 TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   typedef typename TypeParam::Dtype Dtype;
   LayerParameter layer_param;
@@ -85,6 +91,38 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   loss /= static_cast<Dtype>(num) * Dtype(2);
   EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-6);
 }
+*/
+
+TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
+  typedef typename TypeParam::Dtype Dtype;
+  LayerParameter layer_param;
+  ContrastiveLossLayer<Dtype> layer(layer_param);
+  layer.SetUp(this->blob_bottom_vec_, &this->blob_top_vec_);
+  layer.Forward(this->blob_bottom_vec_, &this->blob_top_vec_);
+  // manually compute to compare
+  const Dtype margin = layer_param.contrastive_loss_param().margin();
+  const int num = this->blob_bottom_data_i_->num();
+  const int channels = this->blob_bottom_data_i_->channels();
+  Dtype loss(0);
+  Dtype l1_norm(0);
+  for (int i = 0; i < num; ++i) {
+    Dtype dist_sq(0);
+    for (int j = 0; j < channels; ++j) {
+      Dtype diff = this->blob_bottom_data_i_->cpu_data()[i*channels+j] -
+          this->blob_bottom_data_j_->cpu_data()[i*channels+j];
+          l1_norm += std::abs(diff);
+    }
+     dist_sq += l1_norm * l1_norm;
+    if (this->blob_bottom_y_->cpu_data()[i]) {  // similar pairs
+      loss += dist_sq * Dtype(2) / margin;
+    } else {
+      loss += Dtype(2) * margin * exponent(-Dtype(2.77) * l1_norm / margin);
+    }
+  }
+  //loss /= static_cast<Dtype>(num) * Dtype(2);
+  EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-6);
+}
+
 
 TYPED_TEST(ContrastiveLossLayerTest, TestGradient) {
   typedef typename TypeParam::Dtype Dtype;
