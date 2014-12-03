@@ -135,6 +135,7 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   typedef typename TypeParam::Dtype Dtype;
   LayerParameter layer_param;
   ContrastiveLossLayer<Dtype> layer(layer_param);
+  printf("Entering typed test method Calling SetUp and Forward\n");
   layer.SetUp(this->blob_bottom_vec_, &this->blob_top_vec_);
   layer.Forward(this->blob_bottom_vec_, &this->blob_top_vec_);
   // manually compute to compare
@@ -162,7 +163,9 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
     } else {
       loss += Dtype(2) * margin * exponent(-Dtype(2.77) * l1_norm / margin);
     }
+        printf("the value of label : %d \n", (int) this->blob_bottom_y_->cpu_data()[i]);
   }
+
     printf("the value of margin : %f \n", (float) margin);
     printf("the value of loss : %f \n", (float) loss);
     

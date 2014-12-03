@@ -120,7 +120,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
       loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
     
     }
-
+    printf("CLL: value of label : %d \n", static_cast<int>(bottom[2]->cpu_data()[i]));
     printf("CLL: value of margin : %f \n", (float) margin);
 
   }
