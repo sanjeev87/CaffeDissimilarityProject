@@ -11,6 +11,7 @@ namespace caffe {
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::LayerSetUp(
   const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
+  printf("Entering ContrastiveLossLayer LayerSetUp method \n");
   LossLayer<Dtype>::LayerSetUp(bottom, top);
   CHECK_EQ(bottom[0]->channels(), bottom[1]->channels());
   CHECK_EQ(bottom[0]->height(), 1);
