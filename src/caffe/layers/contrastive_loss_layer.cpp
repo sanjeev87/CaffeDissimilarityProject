@@ -78,15 +78,19 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
    */
 
    printf("CLL : the values of a_i are \n");
-      for(int temp = 0 ; temp < count ; temp++){
-          printf("%f \t ",(float) bottom[0]->cpu_data()[count] );
+    for (int i = 0; i < bottom[0]->num(); ++i) {
+       for (int j = 0; j < channels; ++j) {
+          printf("%f \t ",(float) bottom[0]->cpu_data()[i*channels+j] );
       }
+    }
    printf("CLL : End printing values of a_i\n");
 
   printf("CLL : the values of b_i are \n");
-      for(int temp = 0 ; temp < count ; temp++){
-          printf("%f \t ",(float) bottom[1]->cpu_data()[count] );
+    for (int i = 0; i < bottom[1]->num(); ++i) {
+       for (int j = 0; j < channels; ++j) {
+          printf("%f \t ",(float) bottom[1]->cpu_data()[i*channels+j] );
       }
+    }
    printf("CLL : End printing values of b_i\n");
 
    printf("CLL : the diff values for the input vector are \n");
