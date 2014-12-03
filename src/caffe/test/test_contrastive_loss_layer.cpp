@@ -24,7 +24,7 @@ inline Dtype exponent(Dtype x) {
 template <typename TypeParam>
 class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
   typedef typename TypeParam::Dtype Dtype;
-
+/*
  protected:
   ContrastiveLossLayerTest()
       : blob_bottom_data_i_(new Blob<Dtype>(128, 10, 1, 1)),
@@ -60,6 +60,44 @@ class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
   vector<Blob<Dtype>*> blob_bottom_vec_;
   vector<Blob<Dtype>*> blob_top_vec_;
 };
+*/
+
+protected:
+  ContrastiveLossLayerTest()
+      : blob_bottom_data_i_(new Blob<Dtype>(1, 10, 1, 1)),
+        blob_bottom_data_j_(new Blob<Dtype>(1, 10, 1, 1)),
+        blob_bottom_y_(new Blob<Dtype>(1, 1, 1, 1)),
+        blob_top_loss_(new Blob<Dtype>()) {
+    // fill the values
+    FillerParameter filler_param;
+    filler_param.set_mean(0.0);
+    filler_param.set_std(0.3);  // distances~=1.0 to test both sides of margin
+    GaussianFiller<Dtype> filler(filler_param);
+    filler.Fill(this->blob_bottom_data_i_);
+    blob_bottom_vec_.push_back(blob_bottom_data_i_);
+    filler.Fill(this->blob_bottom_data_j_);
+    blob_bottom_vec_.push_back(blob_bottom_data_j_);
+    for (int i = 0; i < blob_bottom_y_->count(); ++i) {
+      blob_bottom_y_->mutable_cpu_data()[i] = caffe_rng_rand() % 2;  // 0 or 1
+    }
+    blob_bottom_vec_.push_back(blob_bottom_y_);
+    blob_top_vec_.push_back(blob_top_loss_);
+  }
+  virtual ~ContrastiveLossLayerTest() {
+    delete blob_bottom_data_i_;
+    delete blob_bottom_data_j_;
+    delete blob_bottom_y_;
+    delete blob_top_loss_;
+  }
+
+  Blob<Dtype>* const blob_bottom_data_i_;
+  Blob<Dtype>* const blob_bottom_data_j_;
+  Blob<Dtype>* const blob_bottom_y_;
+  Blob<Dtype>* const blob_top_loss_;
+  vector<Blob<Dtype>*> blob_bottom_vec_;
+  vector<Blob<Dtype>*> blob_top_vec_;
+};
+
 
 TYPED_TEST_CASE(ContrastiveLossLayerTest, TestDtypesAndDevices);
 
@@ -111,14 +149,23 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
       Dtype diff = this->blob_bottom_data_i_->cpu_data()[i*channels+j] -
           this->blob_bottom_data_j_->cpu_data()[i*channels+j];
           l1_norm += std::abs(diff);
+          printf("value of a_i %f\n", this->blob_bottom_data_i_->cpu_data()[i*channels+j]);
+          printf("value of b_i %f \n", this->blob_bottom_data_j_->cpu_data()[i*channels+j]);
+          printf("the value of a_i - b_i is diff : %f \n", (float)diff );
+          printf("the value of abs(diff) : %f\n", (float) std::abs(diff));
     }
+     printf("the value of l1_norm : %f\n", (float) l1_norm);
      dist_sq += l1_norm * l1_norm;
+     printf("the value of dist_sq : %f\n", (float) dist_sq);
     if (this->blob_bottom_y_->cpu_data()[i]) {  // similar pairs
       loss += dist_sq * Dtype(2) / margin;
     } else {
       loss += Dtype(2) * margin * exponent(-Dtype(2.77) * l1_norm / margin);
     }
   }
+    printf("the value of margin : %f \n", (float) margin);
+    printf("the value of loss : %f \n", (float) loss);
+    
   //loss /= static_cast<Dtype>(num) * Dtype(2);
   EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-6);
 }
