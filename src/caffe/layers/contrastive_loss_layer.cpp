@@ -128,6 +128,13 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
   printf("CLL: value of loss : %f \n", loss);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
+
+template <typename Dtype>
+void ContrastiveLossLayer<Dtype>::Forward_gpu(
+    const vector<Blob<Dtype>*>& bottom,
+    vector<Blob<Dtype>*>* top) {
+  Forward_cpu(& bottom,top); 
+}
 /*
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
