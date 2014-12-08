@@ -166,7 +166,7 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
     printf("the value of loss : %f \n", (float) loss);
     
   //loss /= static_cast<Dtype>(num) * Dtype(2);
-  EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-4);
+  EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-5);
 }
 
 /*
