@@ -123,9 +123,8 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
 
   for (int i = 0; i < bottom[0]->num(); ++i) {
 
-  caffe_gpu_asum(channels,
-        diff_.cpu_data() + (i*channels), 
-        &dist_sq_.mutable_cpu_data()[i]);
+  dist_sq_.mutable_cpu_data()[i] = caffe_cpu_asum(channels,
+        diff_.cpu_data() + (i*channels));
 
   printf("CLL_CU: values of L1 norm are , %f \n", (float) dist_sq_.mutable_cpu_data()[i]);
 
