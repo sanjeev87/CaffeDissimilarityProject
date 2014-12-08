@@ -44,7 +44,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
   loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
-
+*/
 template <typename Dtype>
 __global__ void CLLForward(const int count, const int channels,
     const Dtype margin, const Dtype alpha,
@@ -63,7 +63,7 @@ __global__ void CLLForward(const int count, const int channels,
     }
   }
 }
-*/
+
 
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Forward_gpu(
