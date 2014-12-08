@@ -94,6 +94,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
       dist_sq_.mutable_gpu_data());  // \Sum (a_i-b_i)^2
   */
 
+  const int channels = bottom[0]->channels();
   Dtype margin = this->layer_param_.contrastive_loss_param().margin();
   Dtype loss(0.0);
   for (int i = 0; i < bottom[0]->num(); ++i) {
@@ -110,7 +111,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
       loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.gpu_data()[i]);
     }
   }
-  
+
   printf("CLL: value of loss : %f \n", loss);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
