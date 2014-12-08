@@ -97,11 +97,11 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
   const int channels = bottom[0]->channels();
   Dtype margin = this->layer_param_.contrastive_loss_param().margin();
   Dtype loss(0.0);
-/*
+
      printf("CLL_CU : the values of a_i are \n");
     for (int i = 0; i < bottom[0]->num(); ++i) {
        for (int j = 0; j < channels; ++j) {
-          printf("%f \t ",(float) bottom[0]->gpu_data()[i*channels+j] );
+          printf("%f \t ",(float) bottom[0]->cpu_data()[i*channels+j] );
       }
     }
    printf("CLL_CU : End printing values of a_i\n");
@@ -109,30 +109,30 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
   printf("CLL_CU : the values of b_i are \n");
     for (int i = 0; i < bottom[1]->num(); ++i) {
        for (int j = 0; j < channels; ++j) {
-          printf("%f \t ",(float) bottom[1]->gpu_data()[i*channels+j] );
+          printf("%f \t ",(float) bottom[1]->cpu_data()[i*channels+j] );
       }
     }
    printf("CLL_CU : End printing values of b_i\n");
 
    printf("CLL_CU : the diff values for the input vector are \n");
    for(int temp = 0 ; temp < count ; temp++){
-    printf("%f \t ",(float) diff_.mutable_gpu_data()[temp] );
+    printf("%f \t ",(float) diff_.mutable_cpu_data()[temp] );
    }
    printf("CLL_CU : End printing the diff values\n");
-*/
+
 
   for (int i = 0; i < bottom[0]->num(); ++i) {
 
   caffe_gpu_asum(channels,
-        diff_.gpu_data() + (i*channels), 
-        &dist_sq_.mutable_gpu_data()[i]);
+        diff_.cpu_data() + (i*channels), 
+        &dist_sq_.mutable_cpu_data()[i]);
 
-  printf("CLL_CU: values of L1 norm are , %f \n", (float) dist_sq_.mutable_gpu_data()[i]);
+  printf("CLL_CU: values of L1 norm are , %f \n", (float) dist_sq_.mutable_cpu_data()[i]);
 
     if (static_cast<int>(bottom[2]->cpu_data()[i])) {  // similar pairs
-      loss += Dtype(2) / margin * dist_sq_.gpu_data()[i] * dist_sq_.gpu_data()[i];
+      loss += Dtype(2) / margin * dist_sq_.cpu_data()[i] * dist_sq_.cpu_data()[i];
     } else {  // dissimilar pairs
-      loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.gpu_data()[i]);
+      loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
     }
   }
 
