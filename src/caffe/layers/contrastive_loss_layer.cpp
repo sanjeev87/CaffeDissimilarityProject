@@ -58,10 +58,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
 }
 */
 
-template <typename Dtype>
-inline Dtype exponent(Dtype x) {
-  return exp(x);
-}
+
 
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Forward_cpu(

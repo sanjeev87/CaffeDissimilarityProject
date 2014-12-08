@@ -249,6 +249,11 @@ void caffe_gpu_fabs(const int n, const Dtype* x, Dtype* y);
 template <typename Dtype>
 void caffe_gpu_scale(const int n, const Dtype alpha, const Dtype *x, Dtype* y);
 
+template <typename Dtype>
+inline Dtype exponent(Dtype x) {
+  return exp(x);
+}
+
 #define DEFINE_AND_INSTANTIATE_GPU_UNARY_FUNC(name, operation) \
 template<typename Dtype> \
 __global__ void name##_kernel(const int n, const Dtype* x, Dtype* y) { \

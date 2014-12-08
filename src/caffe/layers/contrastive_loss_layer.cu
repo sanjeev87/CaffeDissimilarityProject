@@ -8,6 +8,7 @@
 
 namespace caffe {
 
+/* original code commented out 
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Forward_gpu(
     const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
@@ -61,6 +62,57 @@ __global__ void CLLForward(const int count, const int channels,
       }
     }
   }
+}
+*/
+
+template <typename Dtype>
+void ContrastiveLossLayer<Dtype>::Forward_gpu(
+    const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
+  const int count = bottom[0]->count();
+  caffe_gpu_sub(
+      count,
+      bottom[0]->gpu_data(),  // a
+      bottom[1]->gpu_data(),  // b
+      diff_.mutable_gpu_data());  // a_i-b_i
+  /*
+  caffe_gpu_powx(
+      count,
+      diff_.mutable_gpu_data(),  // a_i-b_i
+      Dtype(2),
+      diff_sq_.mutable_gpu_data());  // (a_i-b_i)^2
+  */
+
+  /*
+  caffe_gpu_gemv(
+      CblasNoTrans,
+      bottom[0]->num(),
+      bottom[0]->channels(),
+      Dtype(1.0),
+      diff_sq_.gpu_data(),  // (a_i-b_i)^2
+      summer_vec_.gpu_data(),
+      Dtype(0.0),
+      dist_sq_.mutable_gpu_data());  // \Sum (a_i-b_i)^2
+  */
+
+  Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+  Dtype loss(0.0);
+  for (int i = 0; i < bottom[0]->num(); ++i) {
+
+  caffe_gpu_asum(channels,
+        diff_.gpu_data() + (i*channels), 
+        &dist_sq_.mutable_gpu_data()[i]);
+
+  printf("CLL : values of L1 norm are , %f \n", (float) dist_sq_.mutable_gpu_data()[i]);
+
+    if (static_cast<int>(bottom[2]->cpu_data()[i])) {  // similar pairs
+      loss += Dtype(2) / margin * dist_sq_.gpu_data()[i] * dist_sq_.gpu_data()[i];
+    } else {  // dissimilar pairs
+      loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.gpu_data()[i]);
+    }
+  }
+  
+  printf("CLL: value of loss : %f \n", loss);
+  (*top)[0]->mutable_cpu_data()[0] = loss;
 }
 
 template <typename Dtype>
