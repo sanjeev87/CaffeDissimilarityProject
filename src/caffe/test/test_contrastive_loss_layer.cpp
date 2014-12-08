@@ -16,10 +16,6 @@
 
 namespace caffe {
 
-template <typename Dtype>
-inline Dtype exponent(Dtype x) {
-  return exp(x);
-}
 
 template <typename TypeParam>
 class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
