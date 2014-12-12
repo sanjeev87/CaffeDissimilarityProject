@@ -91,7 +91,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
       blobs_to_check.push_back((*bottom)[i]);
     }
   } else {
-    printf("TestGradientUtil: setting propogat down to true\n", );
+    printf("TestGradientUtil: setting propogat down to true\n");
     CHECK_LT(check_bottom, bottom->size());
     blobs_to_check.push_back((*bottom)[check_bottom]);
     propagate_down[check_bottom] = true;
