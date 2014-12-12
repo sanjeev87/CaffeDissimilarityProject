@@ -223,8 +223,7 @@ template <typename Dtype>
 Dtype GradientChecker<Dtype>::GetObjAndGradient(const Layer<Dtype>& layer,
     vector<Blob<Dtype>*>* top, int top_id, int top_data_id) {
   Dtype loss = 0;
-  printf("top_id : %d \n",top_id );
-  printf("top_data_id : %d \n",top_data_id );
+
   if (top_id < 0) {
     // the loss will be half of the sum of squares of all outputs
     for (int i = 0; i < top->size(); ++i) {
@@ -249,6 +248,11 @@ Dtype GradientChecker<Dtype>::GetObjAndGradient(const Layer<Dtype>& layer,
     const Dtype loss_weight = 2;
     loss = (*top)[top_id]->cpu_data()[top_data_id] * loss_weight;
     (*top)[top_id]->mutable_cpu_diff()[top_data_id] = loss_weight;
+    printf("TestGradientUtil: top_id : %d \n",top_id );
+    printf("TestGradientUtil: top_data_id : %d \n",top_data_id );
+    printf("TestGradientUtil: loss_weight : %f \n", loss_weight );
+    printf("TestGradientUtil: top data : %f \n",(*top)[top_id]->cpu_data()[top_data_id] );
+    printf("TestGradientUtil: loss %f \n",  loss);
   }
   return loss;
 }
