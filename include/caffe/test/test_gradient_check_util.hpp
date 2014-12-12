@@ -188,6 +188,7 @@ void GradientChecker<Dtype>::CheckGradientExhaustive(Layer<Dtype>* layer,
     // LOG(ERROR) << "Exhaustive: blob " << i << " size " << top[i]->count();
     for (int j = 0; j < (*top)[i]->count(); ++j) {
       // LOG(ERROR) << "Exhaustive: blob " << i << " data " << j;
+      printf("TestGradientUtil: check_bottom : %d\n",check_bottom);
       CheckGradientSingle(layer, bottom, top, check_bottom, i, j);
     }
   }
