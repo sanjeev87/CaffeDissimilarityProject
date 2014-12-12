@@ -127,6 +127,9 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
 }
 */
 
+/*
+// Forward_CPU test
+
 TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   typedef typename TypeParam::Dtype Dtype;
   LayerParameter layer_param;
@@ -168,7 +171,7 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   //loss /= static_cast<Dtype>(num) * Dtype(2);
   EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-4);
 }
-
+*/
 
 TYPED_TEST(ContrastiveLossLayerTest, TestGradient) {
   typedef typename TypeParam::Dtype Dtype;
