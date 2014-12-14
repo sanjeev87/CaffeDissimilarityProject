@@ -132,12 +132,12 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
 
 
 // Forward_CPU test
-/*
+
 TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   typedef typename TypeParam::Dtype Dtype;
   LayerParameter layer_param;
   ContrastiveLossLayer<Dtype> layer(layer_param);
-  printf("Entering typed test method Calling SetUp and Forward\n");
+  //printf("Entering typed test method Calling SetUp and Forward\n");
   layer.SetUp(this->blob_bottom_vec_, &this->blob_top_vec_);
   layer.Forward(this->blob_bottom_vec_, &this->blob_top_vec_);
   // manually compute to compare
@@ -152,29 +152,31 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
       Dtype diff = this->blob_bottom_data_i_->cpu_data()[i*channels+j] -
           this->blob_bottom_data_j_->cpu_data()[i*channels+j];
           l1_norm += std::abs(diff);
+          /*
           printf("value of a_i %f\n", this->blob_bottom_data_i_->cpu_data()[i*channels+j]);
           printf("value of b_i %f \n", this->blob_bottom_data_j_->cpu_data()[i*channels+j]);
           printf("the value of a_i - b_i is diff : %f \n", (float)diff );
           printf("the value of abs(diff) : %f\n", (float) std::abs(diff));
+          */
     }
-     printf("the value of l1_norm : %f\n", (float) l1_norm);
+     //printf("the value of l1_norm : %f\n", (float) l1_norm);
      dist_sq += l1_norm * l1_norm;
-     printf("the value of dist_sq : %f\n", (float) dist_sq);
+     //printf("the value of dist_sq : %f\n", (float) dist_sq);
     if (this->blob_bottom_y_->cpu_data()[i]) {  // similar pairs
       loss += dist_sq * Dtype(2) / margin;
     } else {
       loss += Dtype(2) * margin * exponent(-Dtype(2.77) * l1_norm / margin);
     }
-        printf("the value of label : %d \n", (int) this->blob_bottom_y_->cpu_data()[i]);
+        //printf("the value of label : %d \n", (int) this->blob_bottom_y_->cpu_data()[i]);
   }
 
-    printf("the value of margin : %f \n", (float) margin);
-    printf("the value of loss : %f \n", (float) loss);
+    //printf("the value of margin : %f \n", (float) margin);
+    //printf("the value of loss : %f \n", (float) loss);
     
   //loss /= static_cast<Dtype>(num) * Dtype(2);
   EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-4);
 }
-*/
+
 
 TYPED_TEST(ContrastiveLossLayerTest, TestGradient) {
   typedef typename TypeParam::Dtype Dtype;
