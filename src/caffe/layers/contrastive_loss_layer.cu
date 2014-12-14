@@ -141,6 +141,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
 
+/* original backward_gpu method
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
@@ -149,8 +150,6 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       const int count = (*bottom)[0]->count();
       const int channels = (*bottom)[0]->channels();
       Dtype margin = this->layer_param_.contrastive_loss_param().margin();
-      // TODO : Remove
-      margin = Dtype(1000);
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[0]->num());
@@ -165,9 +164,9 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     }
   }
 }
+*/
 
-/* 
-// original backward_gpu method
+
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
@@ -208,7 +207,7 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     }
   }
 }
-*/
+
 INSTANTIATE_CLASS(ContrastiveLossLayer);
 
 }  // namespace caffe
