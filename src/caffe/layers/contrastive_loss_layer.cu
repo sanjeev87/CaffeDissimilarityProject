@@ -145,7 +145,7 @@ template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
   for (int i = 0; i < 2; ++i) {
-b    if (propagate_down[i]) {
+    if (propagate_down[i]) {
       const int count = (*bottom)[0]->count();
       const int channels = (*bottom)[0]->channels();
       Dtype margin = this->layer_param_.contrastive_loss_param().margin();
