@@ -91,7 +91,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
       blobs_to_check.push_back((*bottom)[i]);
     }
   } else {
-    printf("TestGradientUtil: setting propogat down to true\n");
+    //printf("TestGradientUtil: setting propogat down to true\n");
     CHECK_LT(check_bottom, bottom->size());
     blobs_to_check.push_back((*bottom)[check_bottom]);
     propagate_down[check_bottom] = true;
@@ -126,16 +126,16 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         computed_gradient_blobs[blob_id]->cpu_data();
     // LOG(ERROR) << "Blob " << blob_id << ": checking "
     //     << current_blob->count() << " parameters.";
-
+/*
     printf("TestGradientUtil: current_blob->count() : %d \n", current_blob->count());
 
     printf("TestGradientUtil: start printing current_blob data \n");
-
+*/
     for (int feat_id = 0; feat_id < current_blob->count(); ++feat_id) {
       printf("%f \t", (float) current_blob->mutable_cpu_data()[feat_id]);
     }
 
-    printf("TestGradientUtil: end printing current_blob data \n \n");
+    //printf("TestGradientUtil: end printing current_blob data \n \n");
 
     for (int feat_id = 0; feat_id < current_blob->count(); ++feat_id) {
       // For an element-wise layer, we only need to do finite differencing to
@@ -150,16 +150,18 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
       if (!element_wise || (feat_id == top_data_id)) {
         // Do finite differencing.
         // Compute loss with stepsize_ added to input.
+        /*
         printf("TestGradientUtil: feature_id %d , feature_value %f \n",feat_id
           , (float) current_blob->mutable_cpu_data()[feat_id]);
+        */
         current_blob->mutable_cpu_data()[feat_id] += stepsize_;
         Caffe::set_random_seed(seed_);
         layer->Forward(*bottom, top);
         positive_objective =
             GetObjAndGradient(*layer, top, top_id, top_data_id);
-        printf("TestGradientUtil: positive_objective : %f \n", (float) positive_objective );
+       // printf("TestGradientUtil: positive_objective : %f \n", (float) positive_objective );
       
-        printf("TestGradientUtil: stepsize_ : %f \n", (float) stepsize_);
+        //printf("TestGradientUtil: stepsize_ : %f \n", (float) stepsize_);
 
         // Compute loss with stepsize_ subtracted from input.
         current_blob->mutable_cpu_data()[feat_id] -= stepsize_ * 2;
@@ -167,7 +169,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         layer->Forward(*bottom, top);
         negative_objective =
             GetObjAndGradient(*layer, top, top_id, top_data_id);
-          printf("TestGradientUtil: negative_objective : %f \n", (float) negative_objective );
+          //printf("TestGradientUtil: negative_objective : %f \n", (float) negative_objective );
         // Recover original input value.
         current_blob->mutable_cpu_data()[feat_id] += stepsize_;
         estimated_gradient = (positive_objective - negative_objective) /
@@ -183,12 +185,13 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         // the scale factor by 1.
         Dtype scale = std::max(
             std::max(fabs(computed_gradient), fabs(estimated_gradient)), 1.);
-
+        /*
         printf("TestGradientUtil: computed_gradient : %f \n", (float) computed_gradient);
         printf("TestGradientUtil: estimated_gradient : %f \n", (float) estimated_gradient );
         printf("TestGradientUtil: Diff between computed and estimate : %f \n", (float) (computed_gradient - estimated_gradient));
         printf("TestGradientUtil: threshold_ : %f \n", (float) threshold_ );
         printf("TestGradientUtil: scale : %f \n", (float) scale );
+        */
         EXPECT_NEAR(computed_gradient, estimated_gradient, threshold_ * scale)
           << "debug: (top_id, top_data_id, blob_id, feat_id)="
           << top_id << "," << top_data_id << "," << blob_id << "," << feat_id
@@ -213,7 +216,7 @@ void GradientChecker<Dtype>::CheckGradientExhaustive(Layer<Dtype>* layer,
     // LOG(ERROR) << "Exhaustive: blob " << i << " size " << top[i]->count();
     for (int j = 0; j < (*top)[i]->count(); ++j) {
       // LOG(ERROR) << "Exhaustive: blob " << i << " data " << j;
-      printf("TestGradientUtil: check_bottom : %d\n",check_bottom);
+      //printf("TestGradientUtil: check_bottom : %d\n",check_bottom);
       CheckGradientSingle(layer, bottom, top, check_bottom, i, j);
     }
   }
@@ -281,11 +284,12 @@ Dtype GradientChecker<Dtype>::GetObjAndGradient(const Layer<Dtype>& layer,
     loss = (*top)[top_id]->cpu_data()[top_data_id];
     
     (*top)[top_id]->mutable_cpu_diff()[top_data_id] = loss_weight;
-    printf("TestGradientUtil: top_id : %d \n",top_id );
+    /*printf("TestGradientUtil: top_id : %d \n",top_id );
     printf("TestGradientUtil: top_data_id : %d \n",top_data_id );
     printf("TestGradientUtil: loss_weight : %f \n", loss_weight );
     printf("TestGradientUtil: top data : %f \n",(*top)[top_id]->cpu_data()[top_data_id] );
     printf("TestGradientUtil: loss %f \n",  loss);
+    */
   }
   return loss;
 }
