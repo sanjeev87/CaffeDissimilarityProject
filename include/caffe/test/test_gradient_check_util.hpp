@@ -135,8 +135,6 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
       printf("%f \t", (float) current_blob->mutable_cpu_data()[feat_id]);
     }
 
-    printf("%f\t", );
-
     printf("TestGradientUtil: end printing current_blob data \n \n");
 
     for (int feat_id = 0; feat_id < current_blob->count(); ++feat_id) {
@@ -178,7 +176,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         // the scale factor by 1.
         Dtype scale = std::max(
             std::max(fabs(computed_gradient), fabs(estimated_gradient)), 1.);
-        
+
         printf("TestGradientUtil: computed_gradient : %f \n", (float) computed_gradient);
         printf("TestGradientUtil: estimated_gradient : %f \n", (float) estimated_gradient );
         printf("TestGradientUtil: Diff between computed and estimate : %f \n", (float) (computed_gradient - estimated_gradient) ;
