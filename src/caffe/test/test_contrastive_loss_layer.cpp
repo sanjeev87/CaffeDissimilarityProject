@@ -60,9 +60,9 @@ class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
 
 protected:
   ContrastiveLossLayerTest()
-      : blob_bottom_data_i_(new Blob<Dtype>(1, 10, 1, 1)),
-        blob_bottom_data_j_(new Blob<Dtype>(1, 10, 1, 1)),
-        blob_bottom_y_(new Blob<Dtype>(1, 1, 1, 1)),
+      : blob_bottom_data_i_(new Blob<Dtype>(10, 10, 1, 1)),
+        blob_bottom_data_j_(new Blob<Dtype>(10, 10, 1, 1)),
+        blob_bottom_y_(new Blob<Dtype>(10, 1, 1, 1)),
         blob_top_loss_(new Blob<Dtype>()) {
     // fill the values
     FillerParameter filler_param;
@@ -75,7 +75,7 @@ protected:
     blob_bottom_vec_.push_back(blob_bottom_data_j_);
     for (int i = 0; i < blob_bottom_y_->count(); ++i) {
       //TODO:Remove
-      blob_bottom_y_->mutable_cpu_data()[i] = 0;  // 0 or 1
+      blob_bottom_y_->mutable_cpu_data()[i] = 1;  // 0 or 1
       //blob_bottom_y_->mutable_cpu_data()[i] = caffe_rng_rand() % 2;  // 0 or 1
     }
     blob_bottom_vec_.push_back(blob_bottom_y_);
