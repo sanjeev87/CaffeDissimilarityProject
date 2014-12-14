@@ -157,8 +157,8 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         layer->Forward(*bottom, top);
         positive_objective =
             GetObjAndGradient(*layer, top, top_id, top_data_id);
-        printf("TestGradientUtil: positive_objective : %d \n", (float) positive_objective );
-        printf("TestGradientUtil: negative_objective : %f \n", (float) negative_objective );
+        printf("TestGradientUtil: positive_objective : %f \n", (float) positive_objective );
+      
         printf("TestGradientUtil: stepsize_ : %f \n", (float) stepsize_);
 
         // Compute loss with stepsize_ subtracted from input.
@@ -167,6 +167,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         layer->Forward(*bottom, top);
         negative_objective =
             GetObjAndGradient(*layer, top, top_id, top_data_id);
+          printf("TestGradientUtil: negative_objective : %f \n", (float) negative_objective );
         // Recover original input value.
         current_blob->mutable_cpu_data()[feat_id] += stepsize_;
         estimated_gradient = (positive_objective - negative_objective) /
