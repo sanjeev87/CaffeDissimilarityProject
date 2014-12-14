@@ -60,9 +60,9 @@ class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
 
 protected:
   ContrastiveLossLayerTest()
-      : blob_bottom_data_i_(new Blob<Dtype>(20, 10, 1, 1)),
-        blob_bottom_data_j_(new Blob<Dtype>(20, 10, 1, 1)),
-        blob_bottom_y_(new Blob<Dtype>(20, 1, 1, 1)),
+      : blob_bottom_data_i_(new Blob<Dtype>(2, 10, 1, 1)),
+        blob_bottom_data_j_(new Blob<Dtype>(2, 10, 1, 1)),
+        blob_bottom_y_(new Blob<Dtype>(2, 1, 1, 1)),
         blob_top_loss_(new Blob<Dtype>()) {
     // fill the values
     FillerParameter filler_param;
