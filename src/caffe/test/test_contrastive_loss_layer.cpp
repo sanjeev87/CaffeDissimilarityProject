@@ -60,9 +60,9 @@ class ContrastiveLossLayerTest : public MultiDeviceTest<TypeParam> {
 
 protected:
   ContrastiveLossLayerTest()
-      : blob_bottom_data_i_(new Blob<Dtype>(10, 10, 1, 1)),
-        blob_bottom_data_j_(new Blob<Dtype>(10, 10, 1, 1)),
-        blob_bottom_y_(new Blob<Dtype>(10, 1, 1, 1)),
+      : blob_bottom_data_i_(new Blob<Dtype>(3, 10, 1, 1)),
+        blob_bottom_data_j_(new Blob<Dtype>(3, 10, 1, 1)),
+        blob_bottom_y_(new Blob<Dtype>(3, 1, 1, 1)),
         blob_top_loss_(new Blob<Dtype>()) {
     // fill the values
     FillerParameter filler_param;
@@ -127,7 +127,7 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
 }
 */
 
-/*
+/
 // Forward_CPU test
 
 TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
@@ -171,7 +171,7 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   //loss /= static_cast<Dtype>(num) * Dtype(2);
   EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-4);
 }
-*/
+
 
 TYPED_TEST(ContrastiveLossLayerTest, TestGradient) {
   typedef typename TypeParam::Dtype Dtype;
