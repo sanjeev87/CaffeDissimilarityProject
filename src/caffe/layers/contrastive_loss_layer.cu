@@ -96,6 +96,8 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
 
   const int channels = bottom[0]->channels();
   Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+  //TODO : Remove
+  margin = Dtype(1000);
   Dtype loss(0.0);
 
      printf("CLL_CU : the values of a_i are \n");
@@ -143,10 +145,12 @@ template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
   for (int i = 0; i < 2; ++i) {
-    if (propagate_down[i]) {
+b    if (propagate_down[i]) {
       const int count = (*bottom)[0]->count();
       const int channels = (*bottom)[0]->channels();
       Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+      // TODO : Remove
+      margin = Dtype(1000);
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[0]->num());
@@ -162,6 +166,65 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   }
 }
 
+/* 
+// original backward_gpu method
+template <typename Dtype>
+void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+    const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
+  for (int i = 0; i < 2; ++i) {
+    if (propagate_down[i]) {
+      const int count = (*bottom)[0]->count();
+      const int channels = (*bottom)[0]->channels();
+      Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+      // TODO : Remove
+      margin = Dtype(1000);
+      const Dtype sign = (i == 0) ? 1 : -1;
+      const Dtype alpha = sign * top[0]->cpu_diff()[0] /
+          static_cast<Dtype>((*bottom)[0]->num());
+      // NOLINT_NEXT_LINE(whitespace/operators)
+     /* 
+     CLLForward<Dtype><<<CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS>>>(
+          count, channels, margin, alpha,
+          (*bottom)[2]->gpu_data(),  // pair similarity 0 or 1
+          diff_.gpu_data(),  // the cached eltwise difference between a and b
+          dist_sq_.gpu_data(),  // the cached square distance between a and b
+          (*bottom)[i]->mutable_gpu_diff());
+      */
+      int num = (*bottom)[i]->num();
+
+    for (int j = 0; j < num; ++j) {
+        Dtype* bout = (*bottom)[i]->mutable_cpu_diff();
+        if (static_cast<int>((*bottom)[2]->cpu_data()[j])) {  // similar pairs
+          for(int k = 0 ; k < channels ; k ++){
+            Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
+            bout[(j*channels) + k] += sign * dist_sq_.mutable_cpu_data()[j] 
+                                    * gradient_sign * 4 / margin;
+          }
+          /*
+          caffe_cpu_axpby(
+              channels,
+              alpha,
+              diff_.cpu_data() + (j*channels),
+              Dtype(0.0),
+              bout + (j*channels));
+          */
+        } else {  // dissimilar pairs
+          
+          for(int k = 0 ; k < channels ; k ++){
+            Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
+            bout[(j*channels) + k] += Dtype(2) * -Dtype(2.77) 
+                                    * exponent(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
+                                    * gradient_sign * sign;
+          }
+        }
+      }
+
+
+      CUDA_POST_KERNEL_CHECK;
+    }
+  }
+}
+*/
 INSTANTIATE_CLASS(ContrastiveLossLayer);
 
 }  // namespace caffe
