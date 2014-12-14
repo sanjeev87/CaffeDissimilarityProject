@@ -66,7 +66,7 @@ protected:
         blob_top_loss_(new Blob<Dtype>()) {
     // fill the values
     FillerParameter filler_param;
-    filler_param.set_mean(0.0);
+    filler_param.set_mean(10.0);
     filler_param.set_std(0.3);  // distances~=1.0 to test both sides of margin
     GaussianFiller<Dtype> filler(filler_param);
     filler.Fill(this->blob_bottom_data_i_);

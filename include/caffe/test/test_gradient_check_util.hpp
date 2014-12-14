@@ -126,6 +126,19 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         computed_gradient_blobs[blob_id]->cpu_data();
     // LOG(ERROR) << "Blob " << blob_id << ": checking "
     //     << current_blob->count() << " parameters.";
+
+    printf("TestGradientUtil: current_blob->count() : %d \n", current_blob->count());
+
+    printf("TestGradientUtil: start printing current_blob data \n");
+
+    for (int feat_id = 0; feat_id < current_blob->count(); ++feat_id) {
+      printf("%f \t", (float) current_blob->mutable_cpu_data()[feat_id]);
+    }
+
+    printf("%f\t", );
+
+    printf("TestGradientUtil: end printing current_blob data \n \n");
+
     for (int feat_id = 0; feat_id < current_blob->count(); ++feat_id) {
       // For an element-wise layer, we only need to do finite differencing to
       // compute the derivative of (*top)[top_id][top_data_id] w.r.t.
@@ -135,6 +148,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
       Dtype estimated_gradient = 0;
       Dtype positive_objective = 0;
       Dtype negative_objective = 0;
+
       if (!element_wise || (feat_id == top_data_id)) {
         // Do finite differencing.
         // Compute loss with stepsize_ added to input.
@@ -164,6 +178,12 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
         // the scale factor by 1.
         Dtype scale = std::max(
             std::max(fabs(computed_gradient), fabs(estimated_gradient)), 1.);
+        
+        printf("TestGradientUtil: computed_gradient : %f \n", (float) computed_gradient);
+        printf("TestGradientUtil: estimated_gradient : %f \n", (float) estimated_gradient );
+        printf("TestGradientUtil: Diff between computed and estimate : %f \n", (float) (computed_gradient - estimated_gradient) ;
+        printf("TestGradientUtil: threshold_ : %f \n", (float) threshold_ );
+        printf("TestGradientUtil: scale : %f \n", (float) scale );
         EXPECT_NEAR(computed_gradient, estimated_gradient, threshold_ * scale)
           << "debug: (top_id, top_data_id, blob_id, feat_id)="
           << top_id << "," << top_data_id << "," << blob_id << "," << feat_id

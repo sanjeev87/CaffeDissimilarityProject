@@ -174,9 +174,9 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[i]->num());
-          printf("value of alpha is %f \n", (float)alpha);
-          printf("value of CPU diff is %f \n", (float) top[0]->cpu_diff()[0]);
-          printf("value of bottom num is %d \n", (int) (*bottom)[i]->num());
+          printf("CLL:value of alpha is %f \n", (float)alpha);
+          printf("CLL:value of CPU diff is %f \n", (float) top[0]->cpu_diff()[0]);
+          printf("CLL:value of bottom num is %d \n", (int) (*bottom)[i]->num());
       int num = (*bottom)[i]->num();
       int channels = (*bottom)[i]->channels();
       for (int j = 0; j < num; ++j) {
@@ -220,6 +220,21 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       }
     }
   }
+
+  // print values for debugging 
+  for (int i = 0; i < 2; ++i) {
+    int num = (*bottom)[i]->num();
+      int channels = (*bottom)[i]->channels();
+      for (int j = 0; j < num; ++j) {
+        Dtype* bout = (*bottom)[i]->mutable_cpu_diff();
+       // if (static_cast<int>((*bottom)[2]->cpu_data()[j])) {  // similar pairs
+          for(int k = 0 ; k < channels ; k ++){
+            printf("CLL: Sample Num : %d, isSimilarPair : %d \n",j,static_cast<int>((*bottom)[2]->cpu_data()[j]));
+            printf("CLL: Bottom Blob Num : %d , Channel Num : %d , Gradient : %f \n", i , k, (float) bout[(j*channels) + k]);
+          }
+      }
+  }
+
 }
 
 #ifdef CPU_ONLY
