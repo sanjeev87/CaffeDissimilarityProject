@@ -73,7 +73,8 @@ protected:
     blob_bottom_vec_.push_back(blob_bottom_data_i_);
     filler_param.set_mean(200.0);
     filler_param.set_std(5.0);
-    filler.Fill(this->blob_bottom_data_j_);
+    GaussianFiller<Dtype> filler2(filler_param);
+    filler2.Fill(this->blob_bottom_data_j_);
     blob_bottom_vec_.push_back(blob_bottom_data_j_);
     for (int i = 0; i < blob_bottom_y_->count(); ++i) {
       blob_bottom_y_->mutable_cpu_data()[i] = caffe_rng_rand() % 2;  // 0 or 1
