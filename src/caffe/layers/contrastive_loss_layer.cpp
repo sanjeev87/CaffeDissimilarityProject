@@ -98,6 +98,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
    printf("CLL : End printing the diff values\n");
 
   Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+  margin = Dtype(1000);
   Dtype loss(0.0);
   for (int i = 0; i < bottom[0]->num(); ++i) {
     dist_sq_.mutable_cpu_data()[i] = caffe_cpu_asum(channels,
@@ -169,6 +170,7 @@ template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
   Dtype margin = this->layer_param_.contrastive_loss_param().margin();
+  margin = Dtype(1000);
   for (int i = 0; i < 2; ++i) {
     if (propagate_down[i]) {
       const Dtype sign = (i == 0) ? 1 : -1;
