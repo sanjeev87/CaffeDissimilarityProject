@@ -179,7 +179,7 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
 
         printf("TestGradientUtil: computed_gradient : %f \n", (float) computed_gradient);
         printf("TestGradientUtil: estimated_gradient : %f \n", (float) estimated_gradient );
-        printf("TestGradientUtil: Diff between computed and estimate : %f \n", (float) (computed_gradient - estimated_gradient) ;
+        printf("TestGradientUtil: Diff between computed and estimate : %f \n", (float) (computed_gradient - estimated_gradient));
         printf("TestGradientUtil: threshold_ : %f \n", (float) threshold_ );
         printf("TestGradientUtil: scale : %f \n", (float) scale );
         EXPECT_NEAR(computed_gradient, estimated_gradient, threshold_ * scale)
