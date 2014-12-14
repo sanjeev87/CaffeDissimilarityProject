@@ -304,7 +304,7 @@ layers {
     name: "loss"
     type: CONTRASTIVE_LOSS
     contrastive_loss_param {
-        margin: 1.0
+        margin: 1000.0
     }
     bottom: "feat"
     bottom: "feat_p"
