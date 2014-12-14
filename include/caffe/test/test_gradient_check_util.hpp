@@ -266,7 +266,13 @@ Dtype GradientChecker<Dtype>::GetObjAndGradient(const Layer<Dtype>& layer,
       caffe_set(top_blob->count(), Dtype(0), top_blob_diff);
     }
     const Dtype loss_weight = 2;
-    loss = (*top)[top_id]->cpu_data()[top_data_id] * loss_weight;
+    
+    // original line 
+    //loss = (*top)[top_id]->cpu_data()[top_data_id] * loss_weight;
+
+    // modified line
+    loss = (*top)[top_id]->cpu_data()[top_data_id];
+    
     (*top)[top_id]->mutable_cpu_diff()[top_data_id] = loss_weight;
     printf("TestGradientUtil: top_id : %d \n",top_id );
     printf("TestGradientUtil: top_data_id : %d \n",top_data_id );
