@@ -188,7 +188,7 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
         if (static_cast<int>((*bottom)[2]->cpu_data()[j])) {  // similar pairs
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
-            bout[(j*channels) + k] = sign * dist_sq_.mutable_cpu_data()[j] 
+            bout[(j*channels) + k] += sign * dist_sq_.mutable_cpu_data()[j] 
                                     * gradient_sign * 4 / margin;
           }
           /*
@@ -203,7 +203,7 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
           
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
-            bout[(j*channels) + k] = Dtype(2) * -Dtype(2.77) * dist_sq_.mutable_cpu_data()[j]
+            bout[(j*channels) + k] += Dtype(2) * -Dtype(2.77) * dist_sq_.mutable_cpu_data()[j]
                                     * exponent(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
                                     * gradient_sign * sign;
           }

@@ -150,11 +150,17 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
       if (!element_wise || (feat_id == top_data_id)) {
         // Do finite differencing.
         // Compute loss with stepsize_ added to input.
+        printf("TestGradientUtil: feature_id %d , feature_value %f \n",feat_id
+          , (float) current_blob->mutable_cpu_data()[feat_id]);
         current_blob->mutable_cpu_data()[feat_id] += stepsize_;
         Caffe::set_random_seed(seed_);
         layer->Forward(*bottom, top);
         positive_objective =
             GetObjAndGradient(*layer, top, top_id, top_data_id);
+        printf("TestGradientUtil: positive_objective : %d \n", (float) positive_objective );
+        printf("TestGradientUtil: negative_objective : %f \n", (float) negative_objective );
+        printf("TestGradientUtil: stepsize_ : %f \n", (float) stepsize_);
+
         // Compute loss with stepsize_ subtracted from input.
         current_blob->mutable_cpu_data()[feat_id] -= stepsize_ * 2;
         Caffe::set_random_seed(seed_);
