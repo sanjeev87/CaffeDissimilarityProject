@@ -67,7 +67,7 @@ protected:
     // fill the values
     FillerParameter filler_param;
     filler_param.set_mean(100.0);
-    filler_param.set_std(30.0);  // distances~=1.0 to test both sides of margin
+    filler_param.set_std(100.0);  // distances~=1.0 to test both sides of margin
     GaussianFiller<Dtype> filler(filler_param);
     filler.Fill(this->blob_bottom_data_i_);
     blob_bottom_vec_.push_back(blob_bottom_data_i_);
