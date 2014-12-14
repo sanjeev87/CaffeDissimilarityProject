@@ -130,10 +130,11 @@ void GradientChecker<Dtype>::CheckGradientSingle(Layer<Dtype>* layer,
     printf("TestGradientUtil: current_blob->count() : %d \n", current_blob->count());
 
     printf("TestGradientUtil: start printing current_blob data \n");
-*/
+
     for (int feat_id = 0; feat_id < current_blob->count(); ++feat_id) {
       printf("%f \t", (float) current_blob->mutable_cpu_data()[feat_id]);
     }
+    */
 
     //printf("TestGradientUtil: end printing current_blob data \n \n");
 
