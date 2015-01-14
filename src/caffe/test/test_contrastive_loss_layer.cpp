@@ -142,7 +142,7 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
   layer.Forward(this->blob_bottom_vec_, &this->blob_top_vec_);
   // manually compute to compare
   Dtype margin = layer_param.contrastive_loss_param().margin();
-  margin = Dtype(1000);
+  //margin = Dtype(1000);
   const int num = this->blob_bottom_data_i_->num();
   const int channels = this->blob_bottom_data_i_->channels();
   Dtype loss(0);
