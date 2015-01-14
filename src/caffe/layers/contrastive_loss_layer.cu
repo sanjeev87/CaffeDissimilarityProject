@@ -150,7 +150,6 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       const int count = (*bottom)[0]->count();
       const int channels = (*bottom)[0]->channels();
       Dtype margin = this->layer_param_.contrastive_loss_param().margin();
-      margin = Dtype(1000);
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[0]->num());
@@ -176,7 +175,7 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       const int count = (*bottom)[0]->count();
       const int channels = (*bottom)[0]->channels();
       Dtype margin = this->layer_param_.contrastive_loss_param().margin();
-      //margin = Dtype(1000);
+      margin = Dtype(1000);
       const Dtype sign = (i == 0) ? 1 : -1;
       const Dtype alpha = sign * top[0]->cpu_diff()[0] /
           static_cast<Dtype>((*bottom)[0]->num());
