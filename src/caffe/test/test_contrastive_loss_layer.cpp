@@ -66,13 +66,13 @@ protected:
         blob_top_loss_(new Blob<Dtype>()) {
     // fill the values
     FillerParameter filler_param;
-    filler_param.set_mean(100.0);
-    filler_param.set_std(5.0);  // distances~=1.0 to test both sides of margin
+    filler_param.set_mean(10.0);
+    filler_param.set_std(1.0);  // distances~=1.0 to test both sides of margin
     GaussianFiller<Dtype> filler(filler_param);
     filler.Fill(this->blob_bottom_data_i_);
     blob_bottom_vec_.push_back(blob_bottom_data_i_);
-    filler_param.set_mean(200.0);
-    filler_param.set_std(5.0);
+    filler_param.set_mean(20.0);
+    filler_param.set_std(1.0);
     GaussianFiller<Dtype> filler2(filler_param);
     filler2.Fill(this->blob_bottom_data_j_);
     blob_bottom_vec_.push_back(blob_bottom_data_j_);
