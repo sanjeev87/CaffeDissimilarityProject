@@ -663,5 +663,6 @@ layers {
     bottom: "fc7"
     bottom: "fc7_p"
     bottom: "label"
+    bottom: "label_p"
     top: "loss"
 }
