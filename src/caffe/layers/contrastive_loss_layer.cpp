@@ -124,7 +124,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
 
   }
   //loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
-  printf("CLL: value of loss : %f \n", loss);
+  //printf("CLL: value of loss : %f \n", loss);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
 

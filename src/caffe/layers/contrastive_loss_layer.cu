@@ -137,7 +137,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
     }
   }
 
-  printf("CLL_CU: value of loss : %f \n", loss);
+  //printf("CLL_CU: value of loss : %f \n", loss);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
 
