@@ -279,10 +279,10 @@ Dtype GradientChecker<Dtype>::GetObjAndGradient(const Layer<Dtype>& layer,
     const Dtype loss_weight = 2;
     
     // original line 
-    //loss = (*top)[top_id]->cpu_data()[top_data_id] * loss_weight;
+    loss = (*top)[top_id]->cpu_data()[top_data_id] * loss_weight;
 
     // modified line
-    loss = (*top)[top_id]->cpu_data()[top_data_id];
+    //loss = (*top)[top_id]->cpu_data()[top_data_id];
     
     (*top)[top_id]->mutable_cpu_diff()[top_data_id] = loss_weight;
     /*printf("TestGradientUtil: top_id : %d \n",top_id );
