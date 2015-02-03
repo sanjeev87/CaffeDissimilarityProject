@@ -188,7 +188,7 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         if (static_cast<int>((*bottom)[2]->cpu_data()[j])) {  // similar pairs
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
-            bout[(j*channels) + k] += alpha * sign * dist_sq_.mutable_cpu_data()[j] 
+            bout[(j*channels) + k] += alpha * dist_sq_.mutable_cpu_data()[j] 
                                     * gradient_sign * 4 / margin;
           }
         } else {  // dissimilar pairs
@@ -197,7 +197,7 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
             bout[(j*channels) + k] += alpha * Dtype(2) * -Dtype(2.77) 
                                     * exponent(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
-                                    * gradient_sign * sign;
+                                    * gradient_sign;
           }
         }
       }
