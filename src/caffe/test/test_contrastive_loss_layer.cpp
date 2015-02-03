@@ -171,9 +171,10 @@ TYPED_TEST(ContrastiveLossLayerTest, TestForward) {
         //printf("the value of label : %d \n", (int) this->blob_bottom_y_->cpu_data()[i]);
   }
 
+    loss = loss / static_cast<Dtype>(num);
     //printf("the value of margin : %f \n", (float) margin);
-    printf("the value of loss estimated : %f \n", (float) loss);
-    printf("the value of loss computed : %f \n", (float) this->blob_top_loss_->cpu_data()[0]);
+    printf("the value of loss estimated : %f \n", (double) loss);
+    printf("the value of loss computed : %f \n", (double) this->blob_top_loss_->cpu_data()[0]);
     
   //loss /= static_cast<Dtype>(num) * Dtype(2);
   EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-4);

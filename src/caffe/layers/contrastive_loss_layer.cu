@@ -137,6 +137,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
     }
   }
 
+  loss = loss / static_cast<Dtype>(bottom[0]->num());
   //printf("CLL_CU: value of loss : %f \n", loss);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
@@ -187,14 +188,14 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         if (static_cast<int>((*bottom)[2]->cpu_data()[j])) {  // similar pairs
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
-            bout[(j*channels) + k] += sign * dist_sq_.mutable_cpu_data()[j] 
+            bout[(j*channels) + k] += alpha * sign * dist_sq_.mutable_cpu_data()[j] 
                                     * gradient_sign * 4 / margin;
           }
         } else {  // dissimilar pairs
           
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
-            bout[(j*channels) + k] += Dtype(2) * -Dtype(2.77) 
+            bout[(j*channels) + k] += alpha * Dtype(2) * -Dtype(2.77) 
                                     * exponent(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
                                     * gradient_sign * sign;
           }
