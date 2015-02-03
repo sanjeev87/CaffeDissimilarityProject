@@ -74,7 +74,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
   /*
    * margin refers to the maximum value of energy -- parameter Q in the paper
    */
-/*
+
    printf("CLL : the values of a_i are \n");
     for (int i = 0; i < bottom[0]->num(); ++i) {
        for (int j = 0; j < channels; ++j) {
@@ -96,7 +96,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
     printf("%f \t ",(float) diff_.mutable_cpu_data()[temp] );
    }
    printf("CLL : End printing the diff values\n");
-*/
+
   Dtype margin = this->layer_param_.contrastive_loss_param().margin();
   //margin = Dtype(1000);
   Dtype loss(0.0);
@@ -104,7 +104,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
     dist_sq_.mutable_cpu_data()[i] = caffe_cpu_asum(channels,
         diff_.cpu_data() + (i*channels));
 
-   // printf("CLL : values of L1 norm are , %f \n", (float) dist_sq_.mutable_cpu_data()[i] );
+   printf("CLL : values of L1 norm are , %f \n", (float) dist_sq_.mutable_cpu_data()[i] );
     /* 
      * 1 is similar pair, 0 is impostor pair.
      * The paper follows opposite notation
@@ -119,12 +119,12 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
       loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
     
     }
-    //printf("CLL: value of label : %d \n", static_cast<int>(bottom[2]->cpu_data()[i]));
-    //printf("CLL: value of margin : %f \n", (float) margin);
+    printf("CLL: value of label : %d \n", static_cast<int>(bottom[2]->cpu_data()[i]));
+    printf("CLL: value of margin : %f \n", (float) margin);
 
   }
   loss = loss / static_cast<Dtype>(bottom[0]->num());
-  //printf("CLL: value of loss : %f \n", loss);
+  printf("CLL: value of loss : %f \n", loss);
   (*top)[0]->mutable_cpu_data()[0] = loss;
 }
 

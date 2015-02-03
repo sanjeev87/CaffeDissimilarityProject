@@ -678,7 +678,7 @@ layers {
     name: "loss"
     type: CONTRASTIVE_LOSS
     contrastive_loss_param {
-        margin: 100000.0
+        margin: 1.0
     }
     bottom: "fc8"
     bottom: "fc8_p"
