@@ -121,6 +121,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
       //loss += std::max(margin-dist_sq_.cpu_data()[i], Dtype(0.0));
       printf("CLL : the exponent of 1 is : %f \n",exp(Dtype(1)));
       printf("CLL : the exponent of -1 is : %f \n", exp(Dtype(-1)));
+      
       loss += Dtype(2) * margin * exp(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
        printf(" CLL: loss computed : %f\n", dist_sq_.cpu_data()[i]);
     }
