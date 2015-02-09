@@ -135,7 +135,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
       loss += Dtype(2) / margin * dist_sq_.cpu_data()[i] * dist_sq_.cpu_data()[i];
         printf(" CLL_CU: loss computed : %f\n", (float) loss);
     } else {  // dissimilar pairs
-      loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
+      loss += Dtype(2) * margin * exp(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
         printf(" CLL_CU: loss computed : %f\n", (float) loss);
     }
   }
@@ -195,11 +195,14 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
                                     * gradient_sign * 4 / margin;
           }
         } else {  // dissimilar pairs
+
+          printf("CLL : the exponent of 1 is : %f \n",exp(Dtype(1)));
+          printf("CLL : the exponent of -1 is : %f \n", exp(Dtype(-1)));
           
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
             bout[(j*channels) + k] += alpha * Dtype(2) * -Dtype(2.77) 
-                                    * exponent(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
+                                    * exp(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
                                     * gradient_sign;
           }
         }

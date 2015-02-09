@@ -119,7 +119,7 @@ void ContrastiveLossLayer<Dtype>::Forward_cpu(
     
     } else {  // dissimilar pairs
       //loss += std::max(margin-dist_sq_.cpu_data()[i], Dtype(0.0));
-      loss += Dtype(2) * margin * exponent(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
+      loss += Dtype(2) * margin * exp(-Dtype(2.77) / margin * dist_sq_.cpu_data()[i]);
        printf(" CLL: loss computed : %f\n", dist_sq_.cpu_data()[i]);
     }
     printf("CLL: value of label : %d \n", static_cast<int>(bottom[2]->cpu_data()[i]));
@@ -201,11 +201,12 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
               bout + (j*channels));
           */
         } else {  // dissimilar pairs
-          
+          printf("CLL : the exponent of 1 is : %f \n",exp(Dtype(1)));
+          printf("CLL : the exponent of -1 is : %f \n", exp(Dtype(-1)));
           for(int k = 0 ; k < channels ; k ++){
             Dtype gradient_sign = diff_.cpu_data()[(j*channels) + k] > 0 ? 1 : -1;
             bout[(j*channels) + k] += alpha * Dtype(2) * -Dtype(2.77) 
-                                    * exponent(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
+                                    * exp(-Dtype(2.77) / margin * dist_sq_.mutable_cpu_data()[j] )
                                     * gradient_sign;
           }
 
