@@ -177,6 +177,8 @@ void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
 template <typename Dtype>
 void ContrastiveLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, vector<Blob<Dtype>*>* bottom) {
+
+  printf("Running Backward GPU method !!!");
   for (int i = 0; i < 2; ++i) {
     if (propagate_down[i]) {
       const int count = (*bottom)[0]->count();
